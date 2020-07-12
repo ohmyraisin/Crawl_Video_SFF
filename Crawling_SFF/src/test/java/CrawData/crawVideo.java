@@ -1,6 +1,9 @@
 package CrawData;
 
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,21 +42,26 @@ public class crawVideo extends SetUp{
 	
 	LinkedList<Video> videoList;
 	
+	
 	@Test
-	public void Crawl_01 () throws InterruptedException, IOException {
+	public void Crawl_01_페이지_수_확인 () throws InterruptedException, IOException {
 			
 		//페이지 네비게이션 클릭하여 마지막 페이지로 이동
 		driver.findElement(By.xpath("//a[@class='btn nextL']")).click();
 		Thread.sleep(2000);
-		//마지막 페이지 URL에서 페이지 네비게이션 
+		//페이지 장수 확인
 		System.out.println(driver.getCurrentUrl());
 		endPageNum = Integer.parseInt(driver.findElement(By.xpath("//div[@class='paging']/a[@class='selected']")).getText());
 		System.out.println("Number of pages : "+endPageNum);
 
-		
+	
+    }
+	
+	@Test
+	public void Crawl_02_비디오_크롤링 () {
+		//마지막페이지에서 첫번째페이지까지 역순으로 이동하며 모든 비디오 타이틀과 링크 videoList에 저장
 		videoList = new LinkedList<Video>();
 		String currentURL = driver.getCurrentUrl();
-		
 		int currentPage = endPageNum;
 		
 		while(currentPage!=0) {
@@ -67,7 +75,7 @@ public class crawVideo extends SetUp{
 				
 				String url = list.get(j).getAttribute("href");
 				String title = list.get(j).getText();
-				String country = findCountry(title);
+				String country = findCountry(title); //title에 있는 정보로 국가명을 추출
 				videoList.add(new Video(title, url, country));
 				
 			}
@@ -77,7 +85,13 @@ public class crawVideo extends SetUp{
 			
 		}
 
-				
+	}
+	
+	@Test
+	public void Crawl_03_국가명_정렬 () throws IOException {
+
+		
+		//video의 국가정보를 기준으로 정렬
 		Collections.sort(videoList, new Comparator<Video>() {
 			
 			public int compare(Video o1, Video o2)
@@ -86,13 +100,17 @@ public class crawVideo extends SetUp{
 			}
 		});
 		
-		
+
+	}
+	
+	@Test
+	public void Crawl_04_엑셀_저장 () throws IOException {
+	
+		//videoList에 있는 정보를 엑셀에 저장
 		createResult();
 
 		driver.quit();
-    }
-
-
+	}
 	
 	public void createResult () throws IOException {
 		
@@ -105,10 +123,13 @@ public class crawVideo extends SetUp{
         Sheet sheet=null;
         int rowNum = 0;
         
+        //국가명 별로 시트를 생성하여 저장
+        
         for(int i=0; i<videoList.size();i++) {
         	String  present=""; 
         	Video video = videoList.get(i);
         
+        	//hashset에 국가명이 저장되지 않은(최초) 국가는 시트를 생성하고 내용을 저장
         	if(conList.contains(video.country)==false) {
         		conList.add(video.country);
                 sheet = work.createSheet(video.country);
@@ -132,7 +153,7 @@ public class crawVideo extends SetUp{
                 
                 rowNum++;
 
-                
+            // hashset에 국가명이 저장되어 있다면 내용만 저장  
         	}else if(conList.contains(video.country)) {
                 row = sheet.createRow(rowNum);
                 
@@ -149,7 +170,7 @@ public class crawVideo extends SetUp{
         
 
  
-        // excel 파일 저장
+        // excel 파일로 저장. result.xls 결과물 생성
         try {
         	File file = new File("");
     		String currentPath = file.getAbsolutePath();    
@@ -165,7 +186,7 @@ public class crawVideo extends SetUp{
 	}
 	
 	public String findCountry (String title) {
-		
+		//타이틀에 있는 정보를 기준으로 국가명을 구분함
 		if(title.contains("베트남") || title.contains("하노이") ) {
 			return "베트남";
 		}else if(title.contains("멕시코")) {
