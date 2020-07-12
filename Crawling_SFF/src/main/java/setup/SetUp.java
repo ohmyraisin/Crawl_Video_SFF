@@ -29,9 +29,9 @@ public class SetUp {
 		String expectedTitle = "스트리트푸드파이터 시즌2";
 
 		if(actualTitle.contains(expectedTitle)) {
-			System.out.println("We have StreetFoodFighter");
+			System.out.println("[My Log] We have StreetFoodFighter!");
 		}else {
-			System.out.println("We miss StreetFoodFighter");
+			System.out.println("[My Log] Fail to access...");
 		}
     }
 

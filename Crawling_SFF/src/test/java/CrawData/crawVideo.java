@@ -50,9 +50,9 @@ public class crawVideo extends SetUp{
 		driver.findElement(By.xpath("//a[@class='btn nextL']")).click();
 		Thread.sleep(2000);
 		//페이지 장수 확인
-		System.out.println(driver.getCurrentUrl());
+		System.out.println("[My Log] Current URL : "+driver.getCurrentUrl());
 		endPageNum = Integer.parseInt(driver.findElement(By.xpath("//div[@class='paging']/a[@class='selected']")).getText());
-		System.out.println("Number of pages : "+endPageNum);
+		System.out.println("[My Log]Number of pages : "+endPageNum);
 
 	
     }
@@ -67,7 +67,7 @@ public class crawVideo extends SetUp{
 		while(currentPage!=0) {
 			
 			driver.get(currentURL);
-			
+			System.out.println("[My Log][Page Number : "+currentPage +"] "+"URL : "+currentPage);
 			List<WebElement> list = new ArrayList<WebElement>();	
 			list = (List<WebElement>) driver.findElements(By.xpath("//ul[@class='videolist']/li/a[2]"));
 						
@@ -90,7 +90,7 @@ public class crawVideo extends SetUp{
 	@Test
 	public void Crawl_03_국가명_정렬 () throws IOException {
 
-		
+		System.out.println("[My Log]"+"Sort by Country Name....");
 		//video의 국가정보를 기준으로 정렬
 		Collections.sort(videoList, new Comparator<Video>() {
 			
@@ -107,6 +107,7 @@ public class crawVideo extends SetUp{
 	public void Crawl_04_엑셀_저장 () throws IOException {
 	
 		//videoList에 있는 정보를 엑셀에 저장
+		System.out.println("[My Log] 엑셀에 저장합니다.");
 		createResult();
 
 		driver.quit();
@@ -133,7 +134,8 @@ public class crawVideo extends SetUp{
         	if(conList.contains(video.country)==false) {
         		conList.add(video.country);
                 sheet = work.createSheet(video.country);
-        		
+        		System.out.println("[My Log] 새로운 시트를 생성 : "+video.country);
+
         		row = sheet.createRow(0);
                 cell = row.createCell(0);
                 cell.setCellValue("클립영상 타이틀");
@@ -177,6 +179,8 @@ public class crawVideo extends SetUp{
             File xlsFile = new File(currentPath+"/result_excel/result.xls");
             FileOutputStream fileOut = new FileOutputStream(xlsFile);
             work.write(fileOut);
+    		System.out.println("[My Log] 파일 저장 완료!");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -187,6 +191,7 @@ public class crawVideo extends SetUp{
 	
 	public String findCountry (String title) {
 		//타이틀에 있는 정보를 기준으로 국가명을 구분함
+		System.out.println("[My Log] 국가별로 영상을 정렬합니다.");
 		if(title.contains("베트남") || title.contains("하노이") ) {
 			return "베트남";
 		}else if(title.contains("멕시코")) {
