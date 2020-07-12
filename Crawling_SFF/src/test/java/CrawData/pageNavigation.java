@@ -14,7 +14,7 @@ import setup.SetUp;
 public class pageNavigation extends SetUp {
 	
 	@Test
-	public void PageNavi () throws InterruptedException, IOException {
+	public void PageNavi_01 () throws InterruptedException, IOException {
 		
 		driver.findElement(By.xpath("//a[@class='btn next']")).click();
 		int currentNum = Integer.parseInt(driver.findElement(By.xpath("//div[@class='paging']/a[@class='selected']")).getText());
