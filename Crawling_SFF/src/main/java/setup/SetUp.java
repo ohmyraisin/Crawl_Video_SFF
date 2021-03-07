@@ -20,7 +20,7 @@ public class SetUp {
     	File file = new File("");
 		String currentPath = file.getAbsolutePath();
 		String WebDriverId = "webdriver.chrome.driver";
-		String WebDriverPath = currentPath+"/lib/chromedriver";
+		String WebDriverPath = currentPath+"/lib/chromedriver_v88";
     	
 		System.setProperty(WebDriverId, WebDriverPath);
 		driver = new ChromeDriver();
